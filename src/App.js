@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function App() {
+const App = () => {
+
+  const [firstName, setFirstName] = useState('Debadrita');
+  const [lastName, setLastName] = useState('Ghosh');
+  const [joke, setJoke] = useState('');
+
+  useEffect(() => {
+    fetchJoke();
+  }, [])
+
+  const fetchJoke = () => {
+    fetch(`http://api.icndb.com/jokes/random?firstName=${firstName}&lastName=${lastName}`)
+      .then(response => response.json())
+      .then(responseJoke => setJoke(responseJoke.value.joke))
+      .catch((error) => console.log(error))
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App flex">
+      <h2>{joke}</h2>
+      <div className="inputBox flex">
+        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        <button onClick={fetchJoke}>Show Jokes</button>
+      </div>
     </div>
   );
 }
